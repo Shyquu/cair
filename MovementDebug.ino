@@ -1,5 +1,3 @@
-
-
 #define motor1_pin1 2
 #define motor1_pin2 3
 
