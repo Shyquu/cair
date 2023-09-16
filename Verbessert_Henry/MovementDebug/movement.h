@@ -1,7 +1,10 @@
+#include "HardwareSerial.h"
 #ifndef MOVEMENT_H
 #define MOVEMENT_H
 
 #endif
+
+//#include "readserial.h"
 
 class motor{
 
@@ -9,12 +12,13 @@ class motor{
   
     public:
 
-    int Pin1, Pin2, Tag;
+    int Pin1, Pin2, Tag, Direktion;
     
     motor(int P1 = 0, int P2 = 0, int tag = 0){
         this->Pin1 = P1;
         this->Pin2 = P2;
         this->Tag = tag;
+        this->Direktion = 0;
 
         pinMode(this->Pin1,OUTPUT);
         pinMode(this->Pin2,OUTPUT);
@@ -24,25 +28,28 @@ class motor{
     }
 
     void Forward(){
+        this->Direktion = 1;
         digitalWrite(this->Pin2, LOW);
         digitalWrite(this->Pin1, HIGH);
     }
     void Backward(){
+        this->Direktion = -1;
         digitalWrite(this->Pin1, LOW);
         digitalWrite(this->Pin2, HIGH);
     }
 
     void Stop(){
+        this->Direktion = 0;
         digitalWrite(this->Pin2, LOW);
         digitalWrite(this->Pin1, LOW);
     }
 
-    void Start(int Direktion = 1){
-        if (Direktion = 1){
+    void Start(int Direktion = 0){
+        if (Direktion == 1){
             this->Forward();
-        }else if (Direktion = -1){
+        }else if (Direktion == -1){
             this->Backward();
-        }else if (Direktion = 0){
+        }else if (Direktion == 0){
             this->Stop();
         }
     }
@@ -76,19 +83,33 @@ class Side{
       this->M2.Start(direktion);
     }
 
-    void start(int speed){
+    void SpeedTo(int speed){
+      this->speed = prozent(speed);
+      this->SpeedUpdate();
+    }
+
+    void SpeedUpdate(){
+      analogWrite(this->SPin, this->speed);
+    }
+
+  void startDirektion(int direktion){
+      this->Motors(direktion);
+    }
+
+    void start(int speed = NULL){
       int direktion = 0;
       if(speed > 0){
         direktion = 1;
-      }else if(speed <0){
+      }else if(speed < 0){
         direktion = -1;
-        speed = speed*(-1);
+        speed = -speed;
       }
-      this->speed = prozent(speed);
-      analogWrite(this->SPin, this->speed);
+      
+      this->SpeedTo(speed);
 
-      Motors(direktion);
+      this->Motors(direktion);
     }
+
 };
 
 class movement{
@@ -96,16 +117,17 @@ private:
 public:
 
     Side Left, Right;
+    readserial BT;
 
     //Datem empfang
-    int incomingByte = 1; //char
-    char Buff[5];
-    int BuffI = 0;
+    //int incomingByte = 1; //char
+    //char Buff[5];
+    //int BuffI = 0;
     
     movement() {
         this->Left = Side(motor(2,3,1), motor(5,4,2), 10);
         this->Right = Side(motor(7,6,3), motor(8,9,4), 11);
-
+        Serial.println("Movment Ready");
     }
 
     void setupMotor(int M1, int M2, int tag){
@@ -120,72 +142,89 @@ public:
       }
     }
 
-    void ReadComands(){
-      if (Serial.available() > 0) {
-      // read the incoming byte:
-      //Serial.println(Serial.read());
-      incomingByte = Serial.read();
-      Serial.println("Byte: "+String(incomingByte));
-      Buff[BuffI]=int(incomingByte);
-      BuffI = BuffI +1;
-      if(int(incomingByte) == 10){
-        Serial.println("Buff = "+String(Buff[0])+String(Buff[1]));
+    motor FindMotor(int Tag){
+      if(this->Left.M1.Tag = Tag){
+        return this->Left.M1;
+      }else if(this->Left.M2.Tag = Tag){
+        return this->Left.M2;
+      }else if(this->Right.M1.Tag = Tag){
+        return this->Right.M1;
+      }else if(this->Right.M2.Tag = Tag){
+        return this->Right.M2;
+      }
 
-        if(String(Buff[0]) == "s"){
-          if(String(Buff[1]) == "+"){
-            motor_speed = motor_speed+10;
-            Serial.println("+Speed " + String(motor_speed));
+    }
+
+    void Start(int Direktion = 1){
+      this->Left.M1.Start(Direktion);
+      this->Left.M2.Start(Direktion);
+      this->Right.M1.Start(Direktion);
+      this->Right.M2.Start(Direktion);
+    }
+
+    void ReadJoyStick(){
+      Cords Joy = this->BT.readCords();
+      int R = Joy.y - Joy.x;
+      int L = Joy.y + Joy.x;
+
+      this->Left.start(L);
+      this->Right.start(R);
+    }
+
+    void ReadComands(){
+
+      String Buff = this->BT.read();
+      if (Buff != ""){
+      Serial.print(Buff + ">> ");
+        if(String(char(Buff[0])) == "s"){
+          if(String(char(Buff[1])) == "+"){
+            this->Right.speed = this->Right.speed +10;
+            this->Left.speed = this->Left.speed +10;
+            Serial.println("+Speed " + String(this->Left.speed));
           }else if(String(Buff[1]) == "-"){
-            motor_speed = motor_speed-10;
-            Serial.println("-Speed " + String(motor_speed));
+            this->Right.speed = this->Right.speed -10;
+            this->Left.speed = this->Left.speed -10;
+            Serial.println("+Speed " + String(this->Left.speed));
             }
-          analogWrite(motorL_speed, motor_speed);
-          analogWrite(motorR_speed, motor_speed);
+          this->Right.SpeedUpdate();
         }else{
-        if(String(Buff[0]) == "0"){
-          //M = Movement(z0);
-          Serial.println("z0");
-        }else if(String(Buff[0]) == "1"){
-          //M = Movement(z1);
-          Serial.println("z1");
-        }else if(String(Buff[0]) == "2"){
-          //M = Movement(z2);
-          Serial.println("z2");
+          int Direkt= 0;
+        if(String(char(Buff[1])) == "0"){
+          Direkt = 0;
+          Serial.print("D0 ");
+        }else if(String(char(Buff[1])) == "1"){
+          Direkt = 1;
+          Serial.print("D1 ");
+        }else if(String(char(Buff[1])) == "2"){
+          Direkt = -1;
+          Serial.print("D-1 ");
         }
 
-        if(String(Buff[1]) == "1"){
-          //Mo = Motor(m1);
+        if(String(char(Buff[0])) == "1"){
+          this->FindMotor(1).Start(Direkt);
           Serial.println("m1");
-        }else if(String(Buff[1]) == "2"){
-          //Mo = Motor(m2);
+        }else if(String(Buff[0]) == "2"){
+          this->FindMotor(2).Start(Direkt);
           Serial.println("m2");
-        }else if(String(Buff[1]) == "3"){
-          //Mo = Motor(m3);
+        }else if(String(Buff[0]) == "3"){
+          this->FindMotor(3).Start(Direkt);
           Serial.println("m3");
-        }else if(String(Buff[1]) == "4"){
-          //Mo = Motor(m4);
+        }else if(String(Buff[0]) == "4"){
+          this->FindMotor(4).Start(Direkt);
           Serial.println("m4");
-        }else if(String(Buff[1]) == "*"){
-          //move(M,Motor(m1),motor_speed);
-          //move(M,Motor(m2),motor_speed);
-          //move(M,Motor(m3),motor_speed);
-          //Mo = Motor(m4);
+        }else if(String(Buff[0]) == "*"){
+          this->Start(Direkt);
           Serial.println("m*");
-        }else if(String(Buff[1]) == "r"){
-          //move(M,Motor(m1),motor_speed);
-          //Mo = Motor(m2);
+        }else if(String(Buff[0]) == "r"){
+          this->Right.startDirektion(Direkt);
           Serial.println("mR");
-        }else if(String(Buff[1]) == "l"){
-          //move(M,Motor(m3),motor_speed);
-          //Mo = Motor(m4);
+        }else if(String(Buff[0]) == "l"){
+          this->Left.startDirektion(Direkt);
           Serial.println("mL");
         }
-        //move(M,Mo,motor_speed);
-      }
-        BuffI = 0;
       }
     }
-  }
+    }
 };
 
 

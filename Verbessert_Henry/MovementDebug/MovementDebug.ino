@@ -19,12 +19,9 @@ int speed_pin;
 
 int motor_speed;
 
-//Bluetooth
-#include <SoftwareSerial.h>
-
+#include "readserial.h"
 #include "gyruskop.h"
 #include "movement.h"
-#include "readserial.h"
 #define tx 13
 #define rx 12 
 
@@ -45,27 +42,9 @@ char* toStr(int16_t character) { // converts int16 to string and formatting
   return result;
 }
 
-gyruskop Gyruskop;
-gyruskop Durchschnit;
-gyruskop Opti;
-gyruskop D2;
-gyruskop D1;
-gyruskop Werte;
-
-void Opt(){
-   Opti.AX = Gyruskop.AX - Durchschnit.AX;
-   Opti.AY = Gyruskop.AY - Durchschnit.AY;
-   Opti.AZ = Gyruskop.AZ - Durchschnit.AZ;
-   Opti.Temp = Gyruskop.Temp - Durchschnit.Temp;
-   Opti.GX = Gyruskop.GX - Durchschnit.GX;
-   Opti.GY = Gyruskop.GY - Durchschnit.GY;
-   Opti.GZ = Gyruskop.GZ - Durchschnit.GZ; 
-}
-
-SoftwareSerial configBt(rx, tx); // RX, TX
-
-movement Motoren;
-
+  gyruskop Gyruskop;
+  gyruskop Durchschnit;
+  movement Motoren;
 void setup(){
 
   pinMode(0,INPUT);
@@ -110,97 +89,33 @@ for(int i=0;i<20;i++){
  //pinMode(tx, OUTPUT);
  //pinMode(rx, INPUT);
  //SoftwareSerial configBt(rx, tx); // RX, TX
- configBt.begin(9600);//38400);
-
+ 
  Serial.println("Start");
- //configBt.println("B_Start");
- //configBt.write("B_Start");
+
+  movement Motoren;
+  gyruskop Gyruskop;
+  gyruskop Durchschnit;
+//gyruskop Opti;
+//gyruskop D2;
+//gyruskop D1;
+//gyruskop Werte;
 }
 
 
 void loop(){
 
-  /*if (Serial.available() > 0) {
-    // read the incoming byte:
-    //Serial.println(Serial.read());
-    incomingByte = Serial.read();
-    Serial.println("Byte: "+String(incomingByte));
-    Buff[BuffI]=int(incomingByte);
-    BuffI = BuffI +1;
-    if(int(incomingByte) == 10){
-      Serial.println("Buff = "+String(Buff[0])+String(Buff[1]));
-
-      if(String(Buff[0]) == "s"){
-        if(String(Buff[1]) == "+"){
-          motor_speed = motor_speed+10;
-          Serial.println("+Speed " + String(motor_speed));
-        }else if(String(Buff[1]) == "-"){
-          motor_speed = motor_speed-10;
-          Serial.println("-Speed " + String(motor_speed));
-          }
-        analogWrite(motorL_speed, motor_speed);
-        analogWrite(motorR_speed, motor_speed);
-      }else{
-      if(String(Buff[0]) == "0"){
-        M = Movement(z0);
-        Serial.println("z0");
-      }else if(String(Buff[0]) == "1"){
-        M = Movement(z1);
-        Serial.println("z1");
-      }else if(String(Buff[0]) == "2"){
-        M = Movement(z2);
-        Serial.println("z2");
-      }
-
-      if(String(Buff[1]) == "1"){
-        Mo = Motor(m1);
-        Serial.println("m1");
-      }else if(String(Buff[1]) == "2"){
-        Mo = Motor(m2);
-        Serial.println("m2");
-      }else if(String(Buff[1]) == "3"){
-        Mo = Motor(m3);
-        Serial.println("m3");
-      }else if(String(Buff[1]) == "4"){
-        Mo = Motor(m4);
-        Serial.println("m4");
-      }else if(String(Buff[1]) == "*"){
-        move(M,Motor(m1),motor_speed);
-        move(M,Motor(m2),motor_speed);
-        move(M,Motor(m3),motor_speed);
-        Mo = Motor(m4);
-        Serial.println("m*");
-      }else if(String(Buff[1]) == "r"){
-        move(M,Motor(m1),motor_speed);
-        Mo = Motor(m2);
-        Serial.println("mR");
-      }else if(String(Buff[1]) == "l"){
-        move(M,Motor(m3),motor_speed);
-        Mo = Motor(m4);
-        Serial.println("mL");
-      }
-      move(M,Mo,motor_speed);
-    }
-      BuffI = 0;
-    }
-     
-  }*/
-  //configBt.println("Test");
-  //configBt.write("Test");
-  //Serial.println("test");
-  /*incomingByte = configBt.read();
-  if(configBt.available()> 0) // if the HC05 is sending something… 
-  {
-    configBt.write(configBt.read()); // print in serial monitor
-    Serial.println("Bt received: ");
-    configBt.println("Bt:" + configBt.read()); // print in serial monitor
-  }*/
-  /*if(Serial.available()) // if serial monitor is outputting something… 
-  {
-    configBt.write(Serial.read()); // write to Arduino’s Tx pin
-  }*/
+  Motoren.ReadComands();
 
   delay(10);
-
   
 }
+
+/*void Opt(){
+   Opti.AX = Gyruskop.AX - Durchschnit.AX;
+   Opti.AY = Gyruskop.AY - Durchschnit.AY;
+   Opti.AZ = Gyruskop.AZ - Durchschnit.AZ;
+   Opti.Temp = Gyruskop.Temp - Durchschnit.Temp;
+   Opti.GX = Gyruskop.GX - Durchschnit.GX;
+   Opti.GY = Gyruskop.GY - Durchschnit.GY;
+   Opti.GZ = Gyruskop.GZ - Durchschnit.GZ; 
+}*/

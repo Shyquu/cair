@@ -1,14 +1,71 @@
-#ifndef READ_H
-#define READ_H
+#ifndef READSERIAL_H
+#define READSERIAL_H
 
 #endif
 
-typedef struct cords {
-   int x;
-   int lastName;
-} Cords;
+#include "HardwareSerial.h"
+#include "strukturs.h"
 
-String read(){
+//#include "readserial.h"
+//SoftwareSerial configBt(rx, tx);
+//configBt.begin(9600);//38400);
+
+
+//Bluetooth
+//#include <SoftwareSerial.h>
+class readserial{
+
+  public:
+
+  reader(){
+    Serial.println("Lissen");
+  }
+  String read(){
+    String ret = "";
+    char temp = "";
+    if (Serial.available() > 0){
+        //Serial.println("[");
+    }
+    if (Serial.available() > 0){
+      while ((Serial.available() > 0)) {
+    
+        temp = Serial.read();
+        ret = ret + String(temp);
+        //Serial.println(temp);
+      }
+        //Serial.println();
+        //Serial.println(ret + ">\n");
+        return ret;
+    }
+  }
+
+
+  Cords readCords(){
+    Cords ret;
+    if (Serial.available() > 0){
+      while (Serial.available() > 0) {
+
+        ret.x = Serial.parseInt();
+        ret.y = Serial.parseInt();
+
+      } 
+      return ret;
+    }
+  }
+  
+
+};
+
+
+
+/*class ReadComands : reader{
+
+  
+
+}*/
+
+
+/*String readCords(){
 
   while (Serial.available() > 0) {
 
@@ -22,5 +79,5 @@ String read(){
     if (Serial.read() == '\n') {
     }
   }
-}
+}*/
 
