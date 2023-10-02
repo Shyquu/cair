@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "HardwareSerial.h"
 #ifndef MOVEMENT_H
 #define MOVEMENT_H
@@ -62,20 +63,24 @@ class Side{
 
     motor M1, M2;
     int SPin;
-    float speed;
+    int speed;
+    int speedP;
 
     Side(motor MF = motor(), motor MB = motor(), int Speed_Pin = 0){
       this->M1 = MF;
       this->M2 = MB;
 
       this->speed = 50;
+      this->speedP = 50;
       this->SPin = Speed_Pin;
 
       pinMode(this->SPin, OUTPUT);
     }
 
-    float prozent(int prozent){
-      return (255/100)*prozent;
+    int prozent(int prozent){
+      //Serial.println("P:"+ String(prozent));
+      //Serial.println("Speed:"+ String((float(255)/float(100))*float(prozent)));
+      return ((float(255)/float(100))*float(prozent));
     }
 
     void Motors(int direktion){
@@ -84,12 +89,15 @@ class Side{
     }
 
     void SpeedTo(int speed){
-      this->speed = prozent(speed);
+      this->speedP = speed;
       this->SpeedUpdate();
     }
 
     void SpeedUpdate(){
+      this->speed = prozent(this->speedP);
       analogWrite(this->SPin, this->speed);
+      //Serial.print(this->speed); Serial.print("=");
+      //Serial.println(analogRead(this->SPin));
     }
 
   void startDirektion(int direktion){
@@ -178,15 +186,16 @@ public:
       Serial.print(Buff + ">> ");
         if(String(char(Buff[0])) == "s"){
           if(String(char(Buff[1])) == "+"){
-            this->Right.speed = this->Right.speed +10;
-            this->Left.speed = this->Left.speed +10;
-            Serial.println("+Speed " + String(this->Left.speed));
+            this->Right.speedP += 10;
+            this->Left.speedP += 10;
+            Serial.println("+Speed " + String(this->Left.speedP));
           }else if(String(Buff[1]) == "-"){
-            this->Right.speed = this->Right.speed -10;
-            this->Left.speed = this->Left.speed -10;
-            Serial.println("+Speed " + String(this->Left.speed));
+            this->Right.speedP -= 10;
+            this->Left.speedP -= 10;
+            Serial.println("+Speed " + String(this->Left.speedP));
             }
           this->Right.SpeedUpdate();
+          this->Left.SpeedUpdate();
         }else{
           int Direkt= 0;
         if(String(char(Buff[1])) == "0"){
@@ -222,7 +231,7 @@ public:
           this->Left.startDirektion(Direkt);
           Serial.println("mL");
         }
-      }
+      } 
     }
     }
 };

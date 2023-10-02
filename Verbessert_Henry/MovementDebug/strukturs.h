@@ -7,3 +7,5 @@ typedef struct cords {
    int x;
    int y;
 } Cords;
+
+void(* resetFunc) (void) = 0;

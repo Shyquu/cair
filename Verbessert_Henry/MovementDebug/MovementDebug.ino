@@ -99,12 +99,40 @@ for(int i=0;i<20;i++){
 //gyruskop D2;
 //gyruskop D1;
 //gyruskop Werte;
+
+  readserial BT;
 }
 
+void Reading(){
+  //readserial BT;
+  //String IP = BT.GetIP();
+  String IP = "";
+  char temp = "";
+  if (Serial.available() > 0){
+    //Serial.println("Read");
+    temp = Serial.read();
+    if(String(temp) == "#"){
+      resetFunc();
+    }
+    IP = String(temp);
+  }
+
+  if(IP == ""){
+    return;
+  }else{
+    Serial.println(IP);
+    if(IP == "C"){
+      Motoren.ReadComands();
+    }else if(IP == "J"){
+      Motoren.ReadJoyStick();
+  }
+  }
+}
 
 void loop(){
 
-  Motoren.ReadComands();
+  Reading();
+  //Motoren.ReadComands();
 
   delay(10);
   

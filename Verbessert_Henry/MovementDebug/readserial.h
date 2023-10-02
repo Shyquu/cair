@@ -6,6 +6,7 @@
 #include "HardwareSerial.h"
 #include "strukturs.h"
 
+
 //#include "readserial.h"
 //SoftwareSerial configBt(rx, tx);
 //configBt.begin(9600);//38400);
@@ -20,6 +21,20 @@ class readserial{
   reader(){
     Serial.println("Lissen");
   }
+
+  String GetIP(){
+    char temp = "";
+    if (Serial.available() > 0){
+      temp = Serial.read();
+      if(String(temp) == "#"){
+          resetFunc();
+        }
+      return String(temp);
+    }else{
+      return "";
+    }
+  }
+
   String read(){
     String ret = "";
     char temp = "";
@@ -28,10 +43,15 @@ class readserial{
     }
     if (Serial.available() > 0){
       while ((Serial.available() > 0)) {
-    
+        
         temp = Serial.read();
-        ret = ret + String(temp);
+        //Serial.print("In:");
         //Serial.println(temp);
+        if(String(temp) == "#"){
+          resetFunc();
+        }
+        ret = ret + String(temp);
+        
       }
         //Serial.println();
         //Serial.println(ret + ">\n");
@@ -48,7 +68,8 @@ class readserial{
         ret.x = Serial.parseInt();
         ret.y = Serial.parseInt();
 
-      } 
+      }
+      Serial.println("x"+ String(ret.x) + " Y"+String(ret.y));
       return ret;
     }
   }
