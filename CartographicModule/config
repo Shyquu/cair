@@ -1,0 +1,13 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "test"]
+	url = https://github.com/Shyquu/cair.git
+	fetch = +refs/heads/*:refs/remotes/test/*
+[branch "test"]
+	remote = test
+	merge = refs/heads/test

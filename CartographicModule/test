@@ -1,0 +1,5 @@
+3f3dcff567d6d35196303d1af3bd27d20515a467
+3f3dcff567d6d35196303d1af3bd27d20515a467 Leander Larisch <leanderlarisch@Gunters-Mac.fritz.box> 1694874328 +0200	update by push
+): Initial commit
+35717bc6fd6e8d9875317c63012ab17b71aac659 7e81730aff02603b4d8044df104772be7070f6aa Leander Larisch <leanderlarisch@Gunters-Mac.fritz.box> 1694873318 +0200	pull https://github.com/Shyquu/cair.git test --rebase --allow-unrelated-histories (finish): refs/heads/test onto e8d174cacfacbef7434826817b1fbcc515b8b6fd
+7e81730aff02603b4d8044df104772be7070f6aa 3f3dcff567d6d35196303d1af3bd27d20515a467 Leander Larisch <leanderlarisch@Gunters-Mac.fritz.box> 1694874249 +0200	commit: Added distance measurement-functionality
