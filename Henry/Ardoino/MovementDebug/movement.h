@@ -100,7 +100,7 @@ class Side{
       //Serial.println(analogRead(this->SPin));
     }
 
-  void startDirektion(int direktion){
+    void startDirektion(int direktion){
       this->Motors(direktion);
     }
 
@@ -118,6 +118,11 @@ class Side{
       this->Motors(direktion);
     }
 
+    void Stop(){
+      this->M1.Stop();
+      this->M2.Stop();
+    }
+
 };
 
 class movement{
@@ -126,7 +131,7 @@ public:
 
     Side Left, Right;
     readserial BT;
-
+    bool OptimComands = false;
     //Datem empfang
     //int incomingByte = 1; //char
     //char Buff[5];
@@ -164,13 +169,17 @@ public:
     }
 
     void Start(int Direktion = 1){
-      this->Left.M1.Start(Direktion);
-      this->Left.M2.Start(Direktion);
-      this->Right.M1.Start(Direktion);
-      this->Right.M2.Start(Direktion);
+      this->Left.Motors(Direktion);
+      this->Right.Motors(Direktion);
+    }
+
+    void Stop(){
+      this->Left.Stop();
+      this->Right.Stop();
     }
 
     void ReadJoyStick(){
+      // IP = j
       Cords Joy = this->BT.readCords();
       int R = Joy.y - Joy.x;
       int L = Joy.y + Joy.x;
@@ -179,8 +188,42 @@ public:
       this->Right.start(R);
     }
 
-    void ReadComands(){
+    void ReadOptimisedDirektionComands(){
+      /*
+        IP = o
+        W F O   A (Acalerate)
+        L 0 R
+        T B P   S (Desalerate)
+      */
+      char Comand = this->BT.readChar();
+      if(Comand == "N"){return;}
+      else if(Comand == "o"){this->OptimComands=false; return;}
+      else if(Comand == "0"){this->Stop();}
+      else if(Comand == "F"){this->Start(1);}
+      else if(Comand == "B"){this->Start(-1);}
+      else if(Comand == "R"){
+        this->Right.startDirektion(-1);
+        this->Left.startDirektion(1);}
+      else if(Comand == "L"){
+        this->Right.startDirektion(1);
+        this->Left.startDirektion(-1);}
+      else if(Comand == "W"){
+        this->Right.startDirektion(1);
+        this->Left.startDirektion(0);}
+      else if(Comand == "O"){
+        this->Right.startDirektion(0);
+        this->Left.startDirektion(1);}
+      else if(Comand == "T"){
+        this->Right.startDirektion(-1);
+        this->Left.startDirektion(0);}
+      else if(Comand == "P"){
+        this->Right.startDirektion(0);
+        this->Left.startDirektion(-1);}
+      
+    }
 
+    void ReadComands(){
+      // PI = c
       String Buff = this->BT.read();
       if (Buff != ""){
       Serial.print(Buff + ">> ");

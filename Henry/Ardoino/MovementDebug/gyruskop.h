@@ -16,10 +16,10 @@ class gyruskop{
   
   public:
 
-  void init() {
+  void init(void) {
+    Serial.print("Starte Gyro...");
     GyroConekt();
     Serial.print("Startet Gyro");
-
   }
   
   long GX;
@@ -42,15 +42,16 @@ class gyruskop{
 
   void Draw(/*char I*/){
     //Serial.begin(9600);
-    Serial.println();
+    //Serial.println();
     //Serial.print(I);
-    /*Serial.print(" AXD = ");*/ Serial.print(toStr(this->AX));
-    /*Serial.print(" | AYD = ");*/ Serial.print(toStr(this->AY)); //toStr()
-    /*Serial.print(" | AZD = ");*/ Serial.print(toStr(this->AZ));
-    /*Serial.print(" | tmpD= "); Serial.print(this->Temp);*/
-    /*Serial.print(" | GXD = ");*/ Serial.print(toStr(this->GX));
-    /*Serial.print(" | GYD = ");*/ Serial.print(toStr(this->GY));
-    /*Serial.print(" | GZD = ");*/ Serial.print(toStr(this->GZ));
+    Serial.print("AX:"); Serial.print(this->AX);  Serial.print(",");
+    Serial.print("AY:"); Serial.print(this->AY);Serial.print(",");
+    Serial.print("AZ:"); Serial.print(this->AZ);Serial.print(",");
+    /*Serial.print("tmpD:"); Serial.print(this->Temp); Serial.print(",");*/
+    Serial.print("GX:"); Serial.print(this->GX);Serial.print(",");
+    Serial.print("GY:"); Serial.print(this->GY);Serial.print(",");
+    Serial.print("GZ:"); Serial.print(this->GZ);
+    Serial.println();
   }
   void quer(gyruskop D){
     this->GX = (this->GX + D.GX)/2;
@@ -92,7 +93,6 @@ class gyruskop{
     
   }
 
-
   void GyroConekt(){
     Wire.begin();
     Wire.beginTransmission(MPU6050_ADDR);
@@ -102,7 +102,8 @@ class gyruskop{
   }
 
   void getdataGyro() {
-    this->GyroConekt();
+    GyroConekt();
+    //Serial.println("Read...");
     Wire.beginTransmission(MPU6050_ADDR);
     Wire.write(0x3B); // starting with register 0x3B (ACCEL_XOUT_H)
     Wire.endTransmission(false); // the parameter indicates that the Arduino will send a restart. 
@@ -110,12 +111,13 @@ class gyruskop{
     Wire.requestFrom(MPU6050_ADDR, 14, true); // request a total of 7*2=14 registers
 
     // "Wire.read()<<8 | Wire.read();" means two registers are read and stored in the same int16_t variable
-    accX = Wire.read()<<8 | Wire.read(); this->AX = accX; // reading registers: 0x3B (ACCEL_XOUT_H) and 0x3C (ACCEL_XOUT_L)
+    accX = Wire.read()<<8 | Wire.read(); this->AX = int(accX); // reading registers: 0x3B (ACCEL_XOUT_H) and 0x3C (ACCEL_XOUT_L)
     accY = Wire.read()<<8 | Wire.read(); this->AY = accY; // reading registers: 0x3D (ACCEL_YOUT_H) and 0x3E (ACCEL_YOUT_L)
     accZ = Wire.read()<<8 | Wire.read(); this->AZ = accZ; // reading registers: 0x3F (ACCEL_ZOUT_H) and 0x40 (ACCEL_ZOUT_L)
     tRaw = Wire.read()<<8 | Wire.read(); this->Temp = (tRaw + 12412.0) / 340.0; // reading registers: 0x41 (TEMP_OUT_H) and 0x42 (TEMP_OUT_L)
     gyroX = Wire.read()<<8 | Wire.read(); this->GX = gyroX; // reading registers: 0x43 (GYRO_XOUT_H) and 0x44 (GYRO_XOUT_L)
     gyroY = Wire.read()<<8 | Wire.read(); this->GY = gyroY; // reading registers: 0x45 (GYRO_YOUT_H) and 0x46 (GYRO_YOUT_L)
     gyroZ = Wire.read()<<8 | Wire.read(); this->GZ = gyroZ; // reading registers: 0x47 (GYRO_ZOUT_H) and 0x48 (GYRO_ZOUT_L)
+    Wire.endTransmission(true);
   }
 };

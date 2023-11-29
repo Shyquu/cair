@@ -17,7 +17,8 @@
 class readserial{
 
   public:
-
+  int TimeOutCount = 0;
+  bool TimeOut = false;
   reader(){
     Serial.println("Lissen");
   }
@@ -72,6 +73,19 @@ class readserial{
       Serial.println("x"+ String(ret.x) + " Y"+String(ret.y));
       return ret;
     }
+  }
+
+  char readChar(){
+    if (Serial.available() > 0){
+        this->TimeOutCount = 0;
+        return Serial.read();
+    }
+    if(TimeOutCount >= 100){
+      return "0";
+    }
+    this->TimeOutCount += 1;
+    return "N";
+
   }
   
 

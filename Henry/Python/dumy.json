@@ -1,0 +1,33 @@
+{
+    "model":{
+        "LayerCount": 4,
+        "LayerSizes": [4,5,5,3],
+        "Layers":[
+            {
+                "ID": 0,
+                "IN": 4,
+                "OUT": 5,
+                "weights":[
+
+                ]
+            },
+            {
+                "ID": 1,
+                "IN": 5,
+                "OUT": 5,
+                "weights":[
+
+                ]
+            },
+            {
+                "ID": 2,
+                "IN": 5,
+                "OUT": 3,
+                "weights":[
+
+                ]
+            }
+        
+        ]
+    }
+}
