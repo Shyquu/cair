@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="C:\lazarus\fpc\3.2.2\bin\i386-win32\fpc.exe" Date="1449426723"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -WG -l -vewnhibq -FiF:\Lazarus\NuralNet\lib\i386-win32 -FuC:\lazarus\components\opengl\lib\i386-win32\win32 -FuC:\lazarus\lcl\units\i386-win32\win32 -FuC:\lazarus\lcl\units\i386-win32 -FuC:\lazarus\components\freetype\lib\i386-win32 -FuC:\lazarus\components\lazutils\lib\i386-win32 -FuC:\lazarus\packager\units\i386-win32 -FuF:\Lazarus\NuralNet\ -FUF:\Lazarus\NuralNet\lib\i386-win32\ -FEF:\Lazarus\NuralNet\ -oF:\Lazarus\NuralNet\project1.exe -dLCL -dLCLwin32 project1.lpr"/>
+</CONFIG>

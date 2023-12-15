@@ -3,7 +3,7 @@ import time
 import pygame
 import sys
 
-bot = serial.Serial('/dev/rfcomm0',baudrate=9600)
+bot = serial.Serial('/dev/rfcomm1',baudrate=9600)
 #bot.open()
 print(bot.name)
 #print(bot.write(b'10'))

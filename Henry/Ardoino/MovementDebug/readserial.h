@@ -52,6 +52,7 @@ class readserial{
           resetFunc();
         }
         ret = ret + String(temp);
+        delay(5);
         
       }
         //Serial.println();
@@ -63,14 +64,28 @@ class readserial{
 
   Cords readCords(){
     Cords ret;
+    ret.x=0;
+    ret.y=0;
     if (Serial.available() > 0){
+      String tmp = "";
+      char t = "";
       while (Serial.available() > 0) {
+        t = Serial.read();
+        if(String(t) == " "){
+          ret.x=String(tmp).toInt();
+          tmp = "";
+          continue;
+        }
+        tmp = tmp + String(t);
+        //Serial.println(String(tmp));
+        //ret.x = Serial.parseInt();
+        //ret.y = Serial.parseInt();
 
-        ret.x = Serial.parseInt();
-        ret.y = Serial.parseInt();
+        delay(5);
 
       }
-      Serial.println("x"+ String(ret.x) + " Y"+String(ret.y));
+      ret.y = String(tmp).toInt();
+      Serial.println("X"+ String(ret.x) + " Y"+String(ret.y));
       return ret;
     }
   }

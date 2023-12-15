@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="10"/>
+    <BuildModes Active="Default"/>
+    <Units Count="5">
+      <Unit0>
+        <Filename Value="project1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="11" Y="10"/>
+        <UsageCount Value="40"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="15"/>
+        <CursorPos X="75" Y="41"/>
+        <UsageCount Value="40"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="neuralnet.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="jsonneuralnet"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="19"/>
+        <UsageCount Value="40"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="C:\lazarus\lcl\interfaces\win32\interfaces.pp"/>
+        <UnitName Value="Interfaces"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="6" Y="19"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="jsonneuralnet.pas"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="19"/>
+        <CursorPos X="24" Y="40"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit4>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="169" Column="7" TopLine="141"/>
+      </Position1>
+      <Position2>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="18" Column="16"/>
+      </Position2>
+      <Position3>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="91" Column="19" TopLine="59"/>
+      </Position3>
+      <Position4>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="46" Column="20" TopLine="11"/>
+      </Position4>
+      <Position5>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="160" Column="25" TopLine="142"/>
+      </Position5>
+      <Position6>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="161" Column="18" TopLine="142"/>
+      </Position6>
+      <Position7>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="160" Column="38" TopLine="140"/>
+      </Position7>
+      <Position8>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="164" Column="42" TopLine="140"/>
+      </Position8>
+      <Position9>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="163" Column="34" TopLine="148"/>
+      </Position9>
+      <Position10>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="168" Column="45" TopLine="148"/>
+      </Position10>
+      <Position11>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="161" Column="18" TopLine="143"/>
+      </Position11>
+      <Position12>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="168" Column="12" TopLine="143"/>
+      </Position12>
+      <Position13>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="165" Column="16" TopLine="147"/>
+      </Position13>
+      <Position14>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="134" Column="14" TopLine="116"/>
+      </Position14>
+      <Position15>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="51" Column="33" TopLine="45"/>
+      </Position15>
+      <Position16>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="98" Column="8" TopLine="71"/>
+      </Position16>
+      <Position17>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="48" Column="31" TopLine="125"/>
+      </Position17>
+      <Position18>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="148" Column="39" TopLine="129"/>
+      </Position18>
+      <Position19>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="151" Column="64" TopLine="134"/>
+      </Position19>
+      <Position20>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="148" Column="36" TopLine="129"/>
+      </Position20>
+      <Position21>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="151" Column="63" TopLine="134"/>
+      </Position21>
+      <Position22>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="150" Column="21" TopLine="134"/>
+      </Position22>
+      <Position23>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="41" Column="27" TopLine="132"/>
+      </Position23>
+      <Position24>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="158" Column="15" TopLine="135"/>
+      </Position24>
+      <Position25>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="72" Column="46" TopLine="53"/>
+      </Position25>
+      <Position26>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="144" Column="45" TopLine="125"/>
+      </Position26>
+      <Position27>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="154" Column="19" TopLine="136"/>
+      </Position27>
+      <Position28>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="60" Column="9" TopLine="55"/>
+      </Position28>
+      <Position29>
+        <Filename Value="jsonneuralnet.pas"/>
+        <Caret Line="56" TopLine="39"/>
+      </Position29>
+      <Position30>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="41" Column="47" TopLine="14"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>

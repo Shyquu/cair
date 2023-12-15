@@ -15,18 +15,19 @@ void setup(void) {
     delay(10); // will pause Zero, Leonardo, etc until serial console opens
 
   Serial.println("Adafruit MPU6050 test!");
-
-  Wire.beginTransmission(MPU6050_ADDR);
+  //mpu.begin(Adafruit_MPU6050)
+  
+  /*Wire.beginTransmission(MPU6050_ADDR);
   Wire.write(0x6B); // PWR_MGMT_1 register
   Wire.write(0); // wake up!
-  Wire.endTransmission(false);
+  Wire.endTransmission(true);*/
   // Try to initialize!
-  if (!mpu.begin()) {
+  /*if (!mpu.begin(MPU6050_ADDR)) {
     Serial.println("Failed to find MPU6050 chip");
     while (1) {
       delay(10);
     }
-  }
+  }*/
   Serial.println("MPU6050 Found!");
 
   mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
@@ -97,28 +98,30 @@ void loop() {
   /* Get new sensor events with the readings */
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
-
+  //mpu.getAccelerometerSensor();
   /* Print out the values */
-  Serial.print("Acceleration X: ");
-  Serial.print(a.acceleration.x);
-  Serial.print(", Y: ");
+  Serial.print("X:");
+  Serial.print(a.orientation.x);
+  Serial.print(",Y:");
   Serial.print(a.acceleration.y);
-  Serial.print(", Z: ");
+  Serial.print(",Z:");
   Serial.print(a.acceleration.z);
-  Serial.println(" m/s^2");
+  Serial.print(",");
+  //Serial.println(" m/s^2");
 
-  Serial.print("Rotation X: ");
+  Serial.print("RX:");
   Serial.print(g.gyro.x);
-  Serial.print(", Y: ");
+  Serial.print(",RY:");
   Serial.print(g.gyro.y);
-  Serial.print(", Z: ");
+  Serial.print(",RZ:");
   Serial.print(g.gyro.z);
-  Serial.println(" rad/s");
+  //Serial.println(" rad/s");
 
-  Serial.print("Temperature: ");
+  /*Serial.print("Temperature: ");
   Serial.print(temp.temperature);
-  Serial.println(" degC");
+  Serial.println(" degC");*/
 
   Serial.println("");
-  delay(500);
+  //Serial.println(mpu.getAccelerometerSensor().);
+  delay(100);
 }

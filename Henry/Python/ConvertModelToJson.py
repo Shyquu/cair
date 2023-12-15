@@ -21,7 +21,7 @@ class NeuralNet(nn.Module):
         # no activation and no softmax at the end
         return out
 
-File = "Seminar/cair/Henry/Python/model.pth"
+File = "Seminar/cair/Henry/Python/TicTacTow.pth"
 
 model = torch.load(File)
 

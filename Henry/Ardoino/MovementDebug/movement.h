@@ -156,16 +156,15 @@ public:
     }
 
     motor FindMotor(int Tag){
-      if(this->Left.M1.Tag = Tag){
+      if(this->Left.M1.Tag == Tag){
         return this->Left.M1;
-      }else if(this->Left.M2.Tag = Tag){
+      }else if(this->Left.M2.Tag == Tag){
         return this->Left.M2;
-      }else if(this->Right.M1.Tag = Tag){
+      }else if(this->Right.M1.Tag == Tag){
         return this->Right.M1;
-      }else if(this->Right.M2.Tag = Tag){
+      }else if(this->Right.M2.Tag == Tag){
         return this->Right.M2;
       }
-
     }
 
     void Start(int Direktion = 1){
@@ -218,8 +217,8 @@ public:
         this->Left.startDirektion(0);}
       else if(Comand == "P"){
         this->Right.startDirektion(0);
-        this->Left.startDirektion(-1);}
-      
+        this->Left.startDirektion(-1);
+        } 
     }
 
     void ReadComands(){

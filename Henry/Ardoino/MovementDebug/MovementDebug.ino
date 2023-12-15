@@ -14,13 +14,13 @@ char result[7]; // temporary variable used in convert function
 
 gyruskop Gyruskop;
 //gyruskop Durchschnit;
-movement Motoren();
+movement Motoren;
 void setup(){
 
   pinMode(0,INPUT);
   pinMode(1,OUTPUT);
 
-  //Motoren.setupMotor(2,3,1);
+  Motoren.setupMotor(2,3,1);
   Serial.begin(9600);
   //setupGyro();
   
@@ -72,13 +72,25 @@ void setup(){
   }
 }*/
 
+void PPing(){
+  String H = readserial().read();
+  if (H == ""){return;}
+  
+  Serial.println(H.toInt()+1);
+}
+
 void loop(){
   //Serial.println("W");
-  Gyruskop.Update();
-  Gyruskop.Draw();
+  //Gyruskop.Update();
+  //Gyruskop.Draw();
   //Reading();
+
+  //PPing();
+  //Cords C = readserial().readCords();
+  //Serial.println();
+  Motoren.ReadJoyStick();
   //Motoren.ReadComands();
   //Serial.println("W");
-  delay(100);
+  //delay(100);
   
 }
