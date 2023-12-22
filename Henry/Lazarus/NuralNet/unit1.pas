@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    B_Info: TButton;
     B_Auto: TButton;
     B_Next: TButton;
     B_Print: TButton;
@@ -22,6 +23,7 @@ type
     L_Auto: TLabel;
     LB_Log: TListBox;
     L_Beschreibung: TLabel;
+    M_Info: TMemo;
     OnApp: TApplicationProperties;
     B_Load: TButton;
     E_Input: TEdit;
@@ -32,10 +34,10 @@ type
     TB_Speed: TTrackBar;
     procedure B_AutoClick(Sender: TObject);
     procedure B_ClearClick(Sender: TObject);
+    procedure B_InfoClick(Sender: TObject);
     procedure B_LoadClick(Sender: TObject);
     procedure B_NextClick(Sender: TObject);
     procedure B_PrintClick(Sender: TObject);
-    procedure E_InputChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure OGL_ScreenPaint(Sender: TObject);
@@ -57,13 +59,12 @@ var
 
 implementation
 
-procedure PrintCircle(r,x,y:float);
+procedure PrintCircle(r,x,y:float);//Zeichnen eines Kreises mit Dreiecken
 VAR I:Integer;
 begin
    glBegin(GL_TRIANGLE_FAN);
-
-        glVertex2f(x, y); // Center
-        for I := 0 to 360 DO glVertex2f(r*cos(3.14* I / 180.0) + x, r*sin(3.14 * i / 180.0) + y);
+        glVertex2f(x, y); // Mittelpunkt
+        for I := 0 to 360 DO glVertex2f(r*cos(3.14* I / 180.0) + x, r*sin(3.14 * i / 180.0) + y);//Von Grad zu Grad ein Dreieck bis es ein Kreis ist
 
    glEnd();
 
@@ -77,66 +78,77 @@ procedure TForm1.B_LoadClick(Sender: TObject);
 var filename : String;
 begin
 
-   if OpenDialog1.Execute then
+   if OpenDialog1.Execute then //Datei abfragen
    begin
      filename := OpenDialog1.Filename;
-     //ShowMessage(filename);
    end;
-    E_Input.Text:=filename;
-    NN.LoadFile(E_Input.Text);
+    E_Input.Text:=filename; //Den Edit auf den Dateifad ändern
+    NN.LoadFile(E_Input.Text); //Datei in Modellliste laden
 
-    LB_Log.AddItem('Models Loadet: '+IntToStr(NN.NNetCount),LB_Log);
-    //LB_Log.AddItem(FloatToStr(NN.NNetCluster[0].Layers[0].GetWeight(1,2)),LB_Log);
+    LB_Log.AddItem('Models Loadet: '+IntToStr(NN.NNetCount),LB_Log);//Menge der geladnenen Modelle in den Log schreiben
 
-    NN.Next();
-    B_Print.Caption:='Lade '+IntToStr(NN.LoadetNet+1) + '/'+IntToStr(NN.NNetCount);
+    NN.Next();//Modellauswahl Aktualisiren
+    B_Print.Caption:='Zeichnen '+IntToStr(NN.LoadetNet+1) + '/'+IntToStr(NN.NNetCount); //Angabe des Geladenen netzes und der gesamt Menge
 
 end;
 
 procedure TForm1.B_NextClick(Sender: TObject);
 begin
-  NN.Next();
-  B_Print.Caption:='Lade '+IntToStr(NN.LoadetNet+1) + '/'+IntToStr(NN.NNetCount);
+  NN.Next();//Nächstes Modell  Auswählen
+  B_Print.Caption:='Zeichnen '+IntToStr(NN.LoadetNet+1) + '/'+IntToStr(NN.NNetCount); //Update
 end;
 
 procedure TForm1.B_PrintClick(Sender: TObject);
 begin
-  B_Print.Caption:='Lade '+IntToStr(NN.LoadetNet+1) + '/'+IntToStr(NN.NNetCount);
-  OGL_Screen.Invalidate;
+  B_Print.Caption:='Zeichnen '+IntToStr(NN.LoadetNet+1) + '/'+IntToStr(NN.NNetCount);//Update
+  OGL_Screen.Invalidate;//OpenGL Zeichenen
 end;
 
 procedure TForm1.B_ClearClick(Sender: TObject);
 begin
-  NN.Clear();
-  B_Print.Caption:='Lade '+IntToStr(NN.LoadetNet+1) + '/'+IntToStr(NN.NNetCount);
+  NN.Clear(); //Modellliste Löschen
+  B_Print.Caption:='Zeichnen '+IntToStr(NN.LoadetNet+1) + '/'+IntToStr(NN.NNetCount);//Update
+end;
+
+procedure TForm1.B_InfoClick(Sender: TObject);
+begin
+  //Toggel der Informationsbox
+  IF B_Info.Caption='Erklärung'then
+    begin
+      B_Info.Caption:='Zurück';
+      M_Info.Visible:=true;
+    end
+  else
+      begin
+        B_Info.Caption:='Erklärung';
+        M_Info.Visible:=False;
+      end;
 end;
 
 procedure TForm1.B_AutoClick(Sender: TObject);
 begin
+  //Toggel Autofunktion
   IF Auto THEN Auto := False
   ELSE Auto := True;
 
   IF Auto THEN L_Auto.Caption:='ON'
-  ELSE L_Auto.Caption:='OFF';
-end;
-
-procedure TForm1.E_InputChange(Sender: TObject);
-begin
-
+  ELSE L_Auto.Caption:='OFF';      //Anzeigen
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  NN := NNetCluster.Create(LB_Log);
-  Clock:=0;
-  Application.AddOnIdleHandler(@OnAppIdle);
+  NN := NNetCluster.Create(LB_Log);//Listenklasse Initialisiren
+  Clock:=0;//Zeit auf 0 stezen
+  Application.AddOnIdleHandler(@OnAppIdle); //AppIdle starten
 end;
 
 procedure TForm1.FormResize(Sender: TObject);
-begin
-   P_Steuerung.Left:=Form1.Width-P_Steuerung.Width;
-   P_Steuerung.Height:=Form1.Height;
-   OGL_Screen.Width:=Form1.Width-P_Steuerung.Width;
+begin //Größen anpassen
+  M_Info.Width:=Form1.Width-P_Steuerung.Width;
+  M_Info.Height:=Form1.Height;
+  P_Steuerung.Left:=Form1.Width-P_Steuerung.Width;
+  P_Steuerung.Height:=Form1.Height;
+  OGL_Screen.Width:=Form1.Width-P_Steuerung.Width;
 end;
 
 procedure TForm1.OGL_ScreenPaint(Sender: TObject);
@@ -145,7 +157,7 @@ VAR Breite,Hoehe : Integer;
 begin
   Breite := OGL_Screen.Width;
   Hoehe := OGL_Screen.Height;
-  glViewport(0,0,Breite,Hoehe);
+  glViewport(0,0,Breite,Hoehe);          //Viewport einstellungen
   glClearColor(1.0,1.0,1.0,0.0);         // Hintergrundfarbe Weiß
   glClear(GL_COLOR_BUFFER_BIT OR GL_DEPTH_BUFFER_BIT);
 
@@ -158,9 +170,6 @@ begin
 
   // Festlegung der Projektion
   glOrtho(-1.0,1.0,-1.0,1.0,0.1,100.0);
-  //OR
-  //gluPerspective(90,Breite/Hoehe,0.1,100);
-
 
   // Transformation der Projektionsmatrix
 
@@ -176,115 +185,50 @@ begin
   // Kameraposition festlegen
   gluLookAt( 0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0);
 
-  // Objekttransformation
-  //glRotatef(WinkelX,1.0,0.0,0.0);    // Drehung um X-Achse mit Winkel
-  //glRotatef(WinkelY,0.0,1.0,0.0);    // Drehung um Y-Achse mit Winkel
-  //glRotatef(WinkelZ,0.0,0.0,1.0);    // Drehung um Z-Achse mit Winkel
-  //glTranslatef(X,Y,Z);               // Verschiebung zum Punkt
-  //glScalef(ScaleX,ScaleY,ScaleZ);    // gleichmäßige Skalierung nach X, Y und Z
 
-  // Polygonmoduseinstellen
-  //glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-  //OR
-  //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-  //OR
-  //glPointSize(3);
-  //glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
+  // Ausgewähltes Modell Zeichen
 
-
-
-
-  // -- Vordergrund
-
-  IF NN.LoadetNet >= 0 THEN
+  IF NN.LoadetNet >= 0 THEN //Nur wen auch ein da ist
   begin
-   LB_Log.AddItem('Showing Model',LB_Log);
-  PrintNeuralNet(NN.NNetCluster[NN.LoadetNet]);
-  L_Out.Caption:='Model: '+IntToStr(NN.LoadetNet+1)+'/'+IntToStr(NN.NNetCount);
+   LB_Log.AddItem('Showing Model',LB_Log); //Zeichnug des Models und ID loggen
+   PrintNeuralNet(NN.NNetCluster[NN.LoadetNet]);//Procedur zum Zeichenen des Models. Ausgewähltes Modell übergeben
+   L_Out.Caption:='Model: '+IntToStr(NN.LoadetNet+1)+'/'+IntToStr(NN.NNetCount); //Anzeigeupdate
   end
-  else L_Out.Caption:='Kein Model Geladen';
-
- {
-    glVertex3f(-0.2, 0.2, 0.2);  // E
-    glVertex3f( 0.2, 0.2, 0.2);  // F
-    glVertex3f( 0.2, 0.2,-0.2);  // G
-    glVertex3f(-0.2, 0.2,-0.2);  // H
-  glEnd;
-  // -- Seite rechts
-  glBegin(GL_QUADS);
-    glColor3f(1.0,0.5,0.25);      // Orange
-    glVertex3f( 0.2,-0.2, 0.2);  // B
-    glVertex3f( 0.2,-0.2,-0.2);  // C
-    glVertex3f( 0.2, 0.2,-0.2);  // G
-    glVertex3f( 0.2, 0.2, 0.2);  // F
-  glEnd;
-  // -- Seite links
-  glBegin(GL_QUADS);
-    glColor3f(1.0,0.0,1.0);      // Pink
-    glVertex3f(-0.2,-0.2, 0.2);  // A
-    glVertex3f(-0.2,-0.2,-0.2);  // D
-    glVertex3f(-0.2, 0.2,-0.2);  // H
-    glVertex3f(-0.2, 0.2, 0.2);  // E
-  glEnd;
-  // -- Hintergrund
-  glBegin(GL_QUADS);
-    glColor3f(0.5,0.5,0.5);      // Grau
-    glVertex3f(-0.2,-0.2,-0.2);  // D
-    glVertex3f( 0.2,-0.2,-0.2);  // C
-    glVertex3f( 0.2, 0.2,-0.2);  // G
-    glVertex3f(-0.2, 0.2,-0.2);  // H
-  glEnd;
-   }
-  // Textur löschen
-
-  // Transformationsänderung
-  // --- Auslagerung in die Buttons
+  else L_Out.Caption:='Kein Model Geladen'; //Ausgabe des Scheiterns
 
   // Zeichnen
   glFlush();   // Abbilden auf dem BS
   OGL_Screen.SwapBuffers; //BS aktualisieren
-
 end;
 
-procedure TForm1.PrintNeuralNet(Netz :NeuralNet);
+procedure TForm1.PrintNeuralNet(Netz :NeuralNet);//Procedur zum Zeichenen des Übergebennen Models
 VAR
   I,J,K:Integer;
   LayerSpace, NeuronSpace, x:float;
 begin
-  L_Beschreibung.Caption:=Netz.Description;
+  L_Beschreibung.Caption:=Netz.Description; //Beschreibung anzeigen
 
-  LayerSpace:=2.0/(Netz.LayerCount);
-  //LB_Log.AddItem('LayerSpace:'+FloatToStr(LayerSpace), LB_Log);
+  LayerSpace:=2.0/(Netz.LayerCount); //Abstand der Schichten erechnen
 
   for I:=0 To Netz.LayerCount-1 DO
   begin
-    x := -1.0+(LayerSpace*(I+0.5));
-    //LB_Log.AddItem('X:'+FloatToStr(x), LB_Log);
-    {glColor3f(1.0,1.0,1.0);      // Weiß
-    PrintCircle(0.07,x,0.0);
+    x := -1.0+(LayerSpace*(I+0.5));//X wärt für die Schich angeben
 
-    glColor3f(0.0,0.0,0.0);      // Schwartz
-    PrintCircle(0.08,x,0.0);}
-
-    NeuronSpace:=2.0/(Netz.Layer[I]);
+    NeuronSpace:=2.0/(Netz.Layer[I]); //Abstand der Neuronnen dieser Schicht erechnen
     for J:=0 TO Netz.Layer[I] DO
     begin
         glColor3f(1.0,1.0,1.0);      // Weiß
-        PrintCircle(0.07,x,1.0 - (NeuronSpace*(J+0.5)));
+        PrintCircle(0.07,x,1.0 - (NeuronSpace*(J+0.5)));//Zeichnen eines Kreises in Weiß mit Radius 0.07. Damit es Ein schwartzer Rand ist.
 
         glColor3f(0.0,0.0,0.0);      // Schwartz
-        PrintCircle(0.08,x,1.0 - (NeuronSpace*(J+0.5)));
+        PrintCircle(0.08,x,1.0 - (NeuronSpace*(J+0.5)));//Eichenendes Neurons mit Radius 0.08
       end;
   end;
 
-  LayerSpace:=2.0/(Netz.LayerCount);
-  //LB_Log.AddItem('LayerSpace:'+FloatToStr(LayerSpace), LB_Log);
-
-  for I:=0 To Netz.LayerCount-2 DO
+  for I:=0 To Netz.LayerCount-2 DO  //Zeichnen der Gewichte
   begin
-    x := -1.0+(LayerSpace*(I+0.5));
+    x := -1.0+(LayerSpace*(I+0.5)); //X wärte der ersten Schicht
 
-    //NeuronSpace:=2.0/(Netz.Layer[I]);
     for J:=0 TO Netz.Layer[I]-1 DO
     begin
       for K:=0 TO Netz.Layer[I+1]-1 DO
@@ -292,62 +236,50 @@ begin
         glColor3f(0.0,0.0,0.0); // Schwartz
         glLineWidth(0.0);
 
-        Netz.GetMinMax();
-        //LB_Log.AddItem('Max/Min: '+FloatToStr(Netz.Max)+'/'+FloatToStr(Netz.Min),LB_Log);
-        if Netz.Layers[I].GetWeight(J+1,K+1) > 0 THEN
+        Netz.GetMinMax();//Aktualisiren des Größten und des Klensten gewichtes als Referenz zur Liniengröße
+
+        if Netz.Layers[I].GetWeight(J+1,K+1) > 0 THEN //Positives Gewicht
             begin
-                 glLineWidth(10.0*((Netz.Layers[I].GetWeight(J+1,K+1)/Netz.Max)));
+                 glLineWidth(10.0*((Netz.Layers[I].GetWeight(J+1,K+1)/Netz.Max)));//Einstellen der Dicke Prozentual zum Maximum
                  glColor3f(1.0,0.0,0.0); //Rot
             end;
-        if Netz.Layers[I].GetWeight(J+1,K+1) < 0 THEN
+        if Netz.Layers[I].GetWeight(J+1,K+1) < 0 THEN //Negatives Gewicht
             begin
-                 glLineWidth(10.0*(((Netz.Layers[I].GetWeight(J+1,K+1)*-1)/(Netz.Min*-1))));
+                 glLineWidth(10.0*(((Netz.Layers[I].GetWeight(J+1,K+1)*-1)/(Netz.Min*-1))));//Einstellen der Dicke Prozentual zum Minimum
                  glColor3f(0.0,0.0,1.0); //Blau
             end;
 
         glBegin(GL_LINES);
-        glVertex2f(-1.0+(LayerSpace*(I+0.5)),1.0 - (2.0/(Netz.Layer[I])*(J+0.5)));   // IN
-        glVertex2f(-1.0+(LayerSpace*(I+1.5)),1.0 - (2.0/(Netz.Layer[I+1])*(K+0.5)));   // OUT
+            glVertex2f(-1.0+(LayerSpace*(I+0.5)),1.0 - (2.0/(Netz.Layer[I])*(J+0.5)));   // Angabe des Ersten Neurons
+            glVertex2f(-1.0+(LayerSpace*(I+1.5)),1.0 - (2.0/(Netz.Layer[I+1])*(K+0.5)));   // Angabe des Zweiten Neurons
         glEnd;
       end;
     end;
   end;
 
-  {glColor3f(1.0,1.0,1.0);      // Weiß
-  PrintCircle(0.07,0,0);
-
-  glColor3f(0.0,0.0,0.0);      // Schwartz
-  PrintCircle(0.08,0,0);        }
-
- { glBegin(GL_LINES);
-    glColor3f(1.0,1.0,1.0); // Weiß
-    glVertex2f(-1.0,0);   // x-Achse -x
-    glVertex2f( 1.0,0);   // x-Achse +x
-  glEnd;}
-
 end;
 
 procedure TForm1.OGL_ScreenResize(Sender: TObject);
 begin
-     IF OGL_Screen.Height <= 0 THEN Exit;
+     IF OGL_Screen.Height <= 0 THEN Exit; //Wen man nichts mehr sied schliest das Programm sich
 end;
 
-procedure TForm1.OnAppIdle(Sender: TObject; var Done: Boolean);
+procedure TForm1.OnAppIdle(Sender: TObject; var Done: Boolean);//Idel Loop
 begin
   Done:=False;
 
-  IF Auto THEN
+  IF Auto THEN //Wen Automodus Aktiv
       begin
         sleep(100);
-        Clock+= 100;
+        Clock+= 100; //Clock um die gewarteten 100 erwitern
 
-        If (Clock >= 5000-(TB_Speed.Position*50)) THEN
+        If (Clock >= 5000-(TB_Speed.Position*50)) THEN //Wen Limmit ereicht. Bestimmt die Geschwindikeit des durhwächseln
             begin
-             Clock:=0;
-             IF (TB_Speed.Position > -10) THEN
+             Clock:=0;//Zeit zurücksetzen
+             IF (TB_Speed.Position > -10) THEN //Wen nicht auf Stillstand gestelt
                  begin
-                  NN.Next();
-                  OGL_Screen.Invalidate;
+                  NN.Next();//Nächstes Modell auswählen
+                  OGL_Screen.Invalidate; //OpenGL Aktualisiren
                  end;
             end;
       end;

@@ -40,8 +40,8 @@ void setup(){
   //readserial BT;
 }
 
-/*void Reading(){
-  //readserial BT;
+void Reading(){
+  readserial BT;
   //String IP = BT.GetIP();
   String IP = "";
   char temp = "";
@@ -62,15 +62,19 @@ void setup(){
     return;
   }else{
     Serial.println(IP);
+    delay(10);
     if(IP == "c"){
       Motoren.ReadComands();
     }else if(IP == "j"){
+      //Serial.println("Joy");
+      //Cords L = BT.readCords();
       Motoren.ReadJoyStick();
     }else if(IP == "o"){
+      Serial.println("Opt");
       Motoren.OptimComands = true;
     }
   }
-}*/
+}
 
 void PPing(){
   String H = readserial().read();
@@ -83,12 +87,12 @@ void loop(){
   //Serial.println("W");
   //Gyruskop.Update();
   //Gyruskop.Draw();
-  //Reading();
+  Reading();
 
   //PPing();
   //Cords C = readserial().readCords();
   //Serial.println();
-  Motoren.ReadJoyStick();
+  //Motoren.ReadJoyStick();
   //Motoren.ReadComands();
   //Serial.println("W");
   //delay(100);

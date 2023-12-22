@@ -8,12 +8,12 @@ uses
   Classes, SysUtils,fpjson,jsonparser, math, StdCtrls;
 
 type
-  Weights = class
+  Weights = class //Klasse für die gewichte
   public
     ID: Integer;
     Input :Integer;
     Output :Integer;
-    Neuron: ARRAY[0..900] of ARRAY[0..900] of float;
+    Neuron: ARRAY[0..900] of ARRAY[0..900] of float; //2D Array
 
     function GetWeight(i,o:Integer):float;
     function GetMax():float;
@@ -21,7 +21,7 @@ type
   end;
 
 type
-  NeuralNet = class
+  NeuralNet = class //Neural Netz Modell Klasse
   public
     LayerCount: Integer;
     Layer: Array[0..9] of Integer;
@@ -31,24 +31,21 @@ type
     Log: TListBox;
     min,max: float;
 
-    //Procedure LoadFile (FileName : String);
     constructor Create(LB:TListBox); overload;
     Procedure LoadFromJson(Model : TJSONObject);
     procedure GetMinMax();
   end;
 
 type
-  //Eine Classe Zum Sammeln und organiesieren von mehreren Netzen. In Einer JSON Mehrere Netze
+  //Eine Klasse Zum Sammeln und organiesieren von mehreren Netzen. In Einer JSON Mehrere Netze
 
   NNetCluster = class
   public
-    NNetCount: Integer;
-    LoadetNet: Integer; //Index of loadet Net
+    NNetCount: Integer; //Menge der gespeicherten Modelle
+    LoadetNet: Integer; //Index von Ausgewählten Modell
     NNetCluster: Array[0..900] of NeuralNet;
-    Test: String;
     Log: TListBox;
 
-    //procedure Load(Filename: String);
     constructor Create(LB:TListBox); overload;
     Procedure LoadFile (FileName : String);
     Procedure Clear();
@@ -60,19 +57,19 @@ type
 
 implementation
 
-constructor NeuralNet.Create(LB:TListBox);
+constructor NeuralNet.Create(LB:TListBox);//Modell Klassen Builder
 begin
   self.Log := LB;
 end;
 
-constructor NNetCluster.Create(LB:TListBox);
+constructor NNetCluster.Create(LB:TListBox);//Listenclassen Builder
 begin
   self.Log := LB;
   self.NNetCount:=0;
   self.LoadetNet:=-1;
 end;
 
-function Weights.GetMax():float;
+function Weights.GetMax():float; //Größtes gewicht finden
 VAR i,o:Integer;
   Max:float;
 begin
@@ -87,7 +84,7 @@ begin
   Result:=Max;
 end;
 
-function Weights.GetMin():float;
+function Weights.GetMin():float;//Kleinstes Gewicht
 VAR i,o:Integer;
   min:float;
 begin
@@ -102,7 +99,7 @@ begin
   Result:=min;
 end;
 
-procedure NeuralNet.GetMinMax();
+procedure NeuralNet.GetMinMax(); //Suchen und Speichern von Min und Max dur die Layers
 VAR i:Integer;
 begin
   self.Max := 0;
@@ -114,98 +111,81 @@ begin
       end;
 end;
 
-function Weights.GetWeight(i,o:Integer):float;
+function Weights.GetWeight(i,o:Integer):float; //Function zum bekommen des Gewichts von Neuronen
 begin
   Result := self.Neuron[o-1][i-1];
 
 end;
 
-Procedure NNetCluster.Clear();
+Procedure NNetCluster.Clear(); //Liste Löschen
 VAR i:Integer;
 begin
-  for i:=0 to self.NNetCount-1 DO self.NNetCluster[i] := NeuralNet.Create;
-  self.NNetCount:=0;
-  self.Next();
-  self.Log.AddItem('Cleared Model List',self.Log);
+  for i:=0 to self.NNetCount-1 DO self.NNetCluster[i] := NeuralNet.Create;//Objekte Überschreiben
+  self.NNetCount:=0;//Zähler auf 0 geladene Modelle setzen
+  self.Next(); //Aktualisiren
+  self.Log.AddItem('Cleared Model List',self.Log); //Ausführung Loggen
 end;
 
-procedure NNetCluster.Next();
+procedure NNetCluster.Next();//Nächstes Modell auswählen
 begin
      self.LoadetNet:=self.LoadetNet+1;
 
-     if self.LoadetNet >= self.NNetCount THEN
+     if self.LoadetNet >= self.NNetCount THEN //Wen esnde der Liste ereicht zu 0 springen
        self.LoadetNet:=0;
-     if self.NNetCount = 0 THEN self.LoadetNet:=-1;
+     if self.NNetCount = 0 THEN self.LoadetNet:=-1;//Wen keine vorhanden sind, Index = -1, kein teil der Liste
 
-     self.Log.AddItem('Model: '+IntToStr(self.LoadetNet+1), self.Log);
+     self.Log.AddItem('Model: '+IntToStr(self.LoadetNet+1), self.Log);//Auswahl des moddels Loggen
 end;
 
-Procedure NeuralNet.LoadFromJson(Model : TJSONObject);
+Procedure NeuralNet.LoadFromJson(Model : TJSONObject);//Modellklasse lähd aus dem übergebennen JSON objekt seine Daten
 
 Var
-  //J : TJSONData;
-  //Model : TJSONObject;
   JObj: TJSONObject;
   tmp, innerArray: TJSONArray;
   i,k, l : Integer;
 
 begin
-    Try
-          self.Test:= Model.ClassName;
+    Try//Versuch Datei zu öffnen, falls etwas nicht möglich ist
           self.LayerCount:=Model.Get('LayerCount', 0);
           self.Description:=Model.Get('Description', 'No Name');
-          self.Test:=self.Description;
           tmp := TJSONArray.Create;
           tmp := Model.Get('LayerSizes',tmp);
           for i:=0 TO tmp.Count-1 DO
-              self.Layer[i] := tmp.items[i].AsInteger;
-          self.Log.AddItem(IntToStr(self.Layer[0])+IntToStr(self.Layer[1])+IntToStr(self.Layer[2])+IntToStr(self.Layer[3]), self.Log);
+              self.Layer[i] := tmp.items[i].AsInteger;//Alle Schichtgrößen Laden
+          self.Log.AddItem(IntToStr(self.Layer[0])+IntToStr(self.Layer[1])+IntToStr(self.Layer[2])+IntToStr(self.Layer[3]), self.Log);//Modellaufbau Loggen
 
           tmp.Clear;
           tmp:=Model.Get('Layers',tmp);
-          //self.Test:=IntToStr(tmp.Count);
           innerArray:=TJSONArray.Create;
-          for i:=0 to tmp.Count-1 DO
+          for i:=0 to tmp.Count-1 DO//Alle Schichten, die Gewichte, Laden
               begin
                 JObj:=tmp.items[i] as TJSONObject;
                 self.Layers[i] := Weights.Create;
-                self.Layers[i].ID:= JObj.Get('ID',-1);
-                self.Layers[i].Input:= JObj.Get('IN',0);
-                self.Layers[i].Output:= JObj.Get('OUT',0);
+                self.Layers[i].ID:= JObj.Get('ID',-1);//Schicht ID
+                self.Layers[i].Input:= JObj.Get('IN',0);//Inputneuronen der Schicht
+                self.Layers[i].Output:= JObj.Get('OUT',0);//Ausgangsneuronen der Schicht
                 innerArray.Clear;
-                innerArray := JObj.Get('weights', innerArray);
+                innerArray := JObj.Get('weights', innerArray);//Alle Gewichte einzeln Laden
                 FOR k:=0 TO innerArray.Count-1 DO
                     FOR l:=0 TO innerArray.Arrays[k].Count-1 DO
                         self.Layers[i].Neuron[k][l]:=innerArray.Arrays[k].items[l].AsFloat;
               end;
-        //end
-
-      //else
-
-        //Writeln('No JSON data available');
     Finally
-      //FreeAndNil(Model);
     end;
-  //except
-    //On E : Exception do
-      //Writeln('An Exception occurred when parsing : ',E.Message);
-  //end;
 end;
 
-Procedure NNetCluster.LoadFile (FileName : String);
+Procedure NNetCluster.LoadFile (FileName : String);//Datei öffnen und Modelle Ladne
 
 Var
   F : TFileStream;
   P : TJSONParser;
 
 begin
-  //FileName.;
-  F:=TFileStream.Create(FileName,fmopenRead);
-  try
-    // Create parser with Stream as source.
+  F:=TFileStream.Create(FileName,fmopenRead); //Datei Öfnnen
+  try //Versuch Datei zu Ladne, falls etwas nicht möglich ist
     P:=TJSONParser.Create(F);
     try
-      DoParse(P);
+      DoParse(P);//Geladene Datei in JSON vormat bringen und laden
     finally
       FreeAndNil(P);
     end;
@@ -214,7 +194,7 @@ begin
   end;
 end;
 
-Procedure NNetCluster.DoParse(P : TJSONParser);
+Procedure NNetCluster.DoParse(P : TJSONParser);//Modelle aus Datei Laden
 
 Var
   J : TJSONData;
@@ -228,34 +208,31 @@ begin
       If Assigned(J) then
         begin
          tmp := J as TJSONObject;
-         if tmp.IndexOfName('models') > -1 THEN
+         if tmp.IndexOfName('models') > -1 THEN //Wen h+mehrere Modelle erkannt
            begin
-            Test:='Found models';
-            self.Clear();
-            for i := 0 to tmp.Items[0].Count-1 DO
+            self.Clear();//Speicher Löschen
+            for i := 0 to tmp.Items[0].Count-1 DO//Jedes Modell mit Modellklasse öffnen und in array speichern
                 begin
                   self.NNetCluster[i] := NeuralNet.Create(self.Log);
                   self.NNetCluster[i].LoadFromJson(tmp.Items[0].Items[i] as TJSONObject);
-                  self.NNetCount:= self.NNetCount+1;
+                  self.NNetCount:= self.NNetCount+1;//Ein weitere geladen
                 end;
-            //tmp
            end
-         else if tmp.IndexOfName('model') > -1 THEN
+         else if tmp.IndexOfName('model') > -1 THEN//Wen nur ein Modell gefunden
            begin
-            //Test:='Found model';
-            self.NNetCluster[self.NNetCount] := NeuralNet.Create(self.Log);
+            self.NNetCluster[self.NNetCount] := NeuralNet.Create(self.Log);//Weiteres Modell zu liste hinzufügen und aus JSON Laden
             self.NNetCluster[self.NNetCount].LoadFromJson(tmp.Items[0] as TJSONObject);
-            self.NNetCount:= self.NNetCount+1;
-
-            Test:=IntToStr(self.NNetCount);
+            self.NNetCount:= self.NNetCount+1; //ein weiteres
            end
-         else Test := 'Found nothing';
+         else self.Log.AddItem('Found nothing',self.Log);//keine bekannte Dateistruktur
+
 
         end
       else
         Writeln('No JSON data available');
     Finally
       FreeAndNil(J);
+      Self.Log.AddItem('File Loadet Compleatly', self.Log);//Erfolgreichen Laden Loggen
     end;
   except
     On E : Exception do

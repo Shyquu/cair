@@ -3,7 +3,15 @@ import time
 import pygame
 import sys
 
-bot = serial.Serial('/dev/rfcomm1',baudrate=9600)
+
+try:
+    bot = serial.Serial('/dev/rfcomm1',baudrate=9600)
+except:
+    try:
+        bot = serial.Serial('/dev/rfcomm0',baudrate=9600)
+    except:
+        print("Dörp")
+    
 #bot.open()
 print(bot.name)
 #print(bot.write(b'10'))
@@ -28,16 +36,25 @@ def GetPos():
         x,y = pygame.mouse.get_pos()
         return x-100,100-y
 
+def Paint():
+    display.fill((0,0,0))
+    pygame.draw.line(display,(255,255,255),(100,0),(100,200))
+    pygame.draw.line(display,(255,255,255),(0,100),(200,100))
+    pygame.display.flip()
+
+Paint()
+bot.write(f"#".encode("ascii"))
 while True:
-    display.fill((255,255,255))
     x,y = GetPos()
     #print()
     print(x,y)
-    bot.write(f"J{x} {y}".encode("ascii"))
+    bot.write(f"j{x} {y}".encode("ascii"))
     
-    while bot.read(1) != "\n":
-        print("Wait")
+    #while bot.read(1) != "\n".encode("ascii"):
+    #    print("Wait")
     #print(bot.readable().decode("ascii"))
-    pygame.time.wait(100)
+    pygame.time.wait(500)
+else:
+    bot.write(f"#".encode("ascii"))
     
     

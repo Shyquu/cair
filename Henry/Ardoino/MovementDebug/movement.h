@@ -30,13 +30,13 @@ class motor{
 
     void Forward(){
         this->Direktion = 1;
-        digitalWrite(this->Pin2, LOW);
-        digitalWrite(this->Pin1, HIGH);
+        digitalWrite(this->Pin2, HIGH);
+        digitalWrite(this->Pin1, LOW);
     }
     void Backward(){
         this->Direktion = -1;
-        digitalWrite(this->Pin1, LOW);
-        digitalWrite(this->Pin2, HIGH);
+        digitalWrite(this->Pin1, HIGH);
+        digitalWrite(this->Pin2, LOW);
     }
 
     void Stop(){
@@ -84,6 +84,7 @@ class Side{
     }
 
     void Motors(int direktion){
+      this->SpeedTo(100);
       this->M1.Start(direktion);
       this->M2.Start(direktion);
     }
@@ -180,9 +181,9 @@ public:
     void ReadJoyStick(){
       // IP = j
       Cords Joy = this->BT.readCords();
-      int R = Joy.y - Joy.x;
-      int L = Joy.y + Joy.x;
-
+      int R = Joy.y + Joy.x;
+      int L = Joy.y - Joy.x;
+      Serial.println(L,R);
       this->Left.start(L);
       this->Right.start(R);
     }
@@ -191,15 +192,27 @@ public:
       /*
         IP = o
         W F O   A (Acalerate)
-        L 0 R
+        L D R
         T B P   S (Desalerate)
       */
-      char Comand = this->BT.readChar();
-      if(Comand == "N"){return;}
-      else if(Comand == "o"){this->OptimComands=false; return;}
-      else if(Comand == "0"){this->Stop();}
-      else if(Comand == "F"){this->Start(1);}
-      else if(Comand == "B"){this->Start(-1);}
+      char Command = this->BT.readChar();
+      String Comand = "";
+      if (Command != 20){
+        //Serial.print("o ");
+        //Serial.print(String(Command));
+        //Serial.println(String(Command) == "F");
+        Comand = String(char(Command));}
+      else{
+        return;
+      }
+      //Serial.print("test ");
+      if(Comand == "N"){
+        //Serial.println("N");
+        return;}
+      else if(Comand == "o"){this->OptimComands=false; /*Serial.println("De");*/ return;}
+      else if(Comand == "D"){this->Stop(); /*Serial.println("St");*/}
+      else if(Comand == "F"){this->Start(1); /*Serial.println("FF");*/}
+      else if(Comand == "B"){this->Start(-1); /*Serial.println("BB");*/}
       else if(Comand == "R"){
         this->Right.startDirektion(-1);
         this->Left.startDirektion(1);}
@@ -218,7 +231,10 @@ public:
       else if(Comand == "P"){
         this->Right.startDirektion(0);
         this->Left.startDirektion(-1);
-        } 
+        }
+      else{
+        Serial.println("KP");
+      }
     }
 
     void ReadComands(){

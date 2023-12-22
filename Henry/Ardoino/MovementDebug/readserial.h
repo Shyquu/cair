@@ -77,11 +77,11 @@ class readserial{
           continue;
         }
         tmp = tmp + String(t);
-        //Serial.println(String(tmp));
+        //Serial.println("LL");
         //ret.x = Serial.parseInt();
         //ret.y = Serial.parseInt();
 
-        delay(5);
+        delay(10);
 
       }
       ret.y = String(tmp).toInt();
@@ -92,14 +92,20 @@ class readserial{
 
   char readChar(){
     if (Serial.available() > 0){
-        this->TimeOutCount = 0;
-        return Serial.read();
+        //this->TimeOutCount = 0;
+        //delay(5);
+        char tmp = Serial.read();
+        if(String(tmp) == "#"){
+          resetFunc();
+        }
+        return tmp;
     }
-    if(TimeOutCount >= 100){
-      return "0";
+    /*if(TimeOutCount >= 100){
+      return "N";
     }
     this->TimeOutCount += 1;
-    return "N";
+    return "N";*/
+    return "";
 
   }
   
