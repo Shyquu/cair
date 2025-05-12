@@ -1,0 +1,59 @@
+Unit jsonneuralnet;
+{$mode objfpc}{$H+}
+interface
+uses
+  Classes, SysUtils,fpjson, jsonConf, math;
+
+type
+  Wights = class;
+  //private
+  public
+    ID: Integer;
+    Input :Integer;
+    Output :Integer;
+    Neuron: ARRAY of ARRAY of float;
+
+    //procedure getJSON(Text: String);
+    //property Farbe: string read FFarbe write SetFarbe;
+  end;
+
+type
+  NeuralNet = class
+  //private
+  //public
+    LayerCount: Integer;
+    Layer: Array of Integer;
+    Layers: ARRAY of Wights;
+
+    //procedure Load(Filename: String);
+    //property Farbe: string read FFarbe write SetFarbe;
+  end;
+
+//implementation
+
+
+{procedure NeuralNet.Load(Filename: String);
+VAR
+   c: TJSONConfig;
+begin
+    c:= TJSONConfig.Create(Nil);
+  try
+    //try/except to handle broken json file
+    try
+      c.Formatted:= true;
+      c.Filename:= Text;
+    except
+      exit;
+    end;
+
+    self.LayerCount := c.GetValue('/model/LayerCount', 0);
+
+  finally
+    c.Free;
+  end;
+
+  //L_Out.Caption:=IntToStr(Count);
+
+end; }
+end.
+
